@@ -18,8 +18,16 @@ public class playerMovement : MonoBehaviour
     private bool canJump;
     private bool hasJumped;
 
+    //Throw Stuff
+    public float throwConstant = 1;
+    private float throwForce;
+    private float throwTimer = 0;
+    public float throwTime;
+    private bool holdingThrow = false;
+
     //Object Stuff
     private GameObject lastTouched;
+    public GameObject Grenade;
 
     // Start is called before the first frame update
     void Start()
@@ -30,10 +38,20 @@ public class playerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        
         Move();
         if(Input.GetKeyDown(KeyCode.Space))
         {
             Jump();
+        }
+        if (Input.GetMouseButtonDown(0))
+        {
+            throwTimer = 0;
+            holdingThrow = true;
+        }
+        if (holdingThrow == true)
+        {
+            ThrowProjectile();
         }
     }
 
@@ -71,5 +89,23 @@ public class playerMovement : MonoBehaviour
                 canJump = true;
             }
         }
+    }
+    private void ThrowProjectile()
+    {
+        if (throwTimer <= throwTime)
+        {
+            throwTimer += Time.deltaTime;
+            throwForce = throwTimer / throwTime;
+            //Debug.Log(throwForce);
+        }
+        if(Input.GetMouseButtonUp(0))
+        {
+            var newGrenade = Instantiate(Grenade, transform.position, Quaternion.identity);
+            Debug.Log(throwForce);
+            newGrenade.GetComponent<Rigidbody2D>().velocity = new Vector2(Camera.main.ScreenToWorldPoint(Input.mousePosition).x - newGrenade.transform.position.x, Camera.main.ScreenToWorldPoint(Input.mousePosition).y - newGrenade.transform.position.y).normalized * throwConstant* throwForce;
+            Physics2D.IgnoreCollision(newGrenade.transform.GetComponent<Collider2D>(), GetComponent<Collider2D>());
+            holdingThrow = false;
+        }
+
     }
 }
