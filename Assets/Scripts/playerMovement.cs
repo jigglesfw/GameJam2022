@@ -18,6 +18,7 @@ public class playerMovement : MonoBehaviour
     private bool canJump;
     private bool hasJumped;
     private bool grounded = false;
+    private Vector2 startPos;
     
 
 
@@ -42,6 +43,7 @@ public class playerMovement : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         normalGrav = Physics2D.gravity;
+        startPos = transform.position;
     }
 
     // Update is called once per frame
@@ -72,6 +74,8 @@ public class playerMovement : MonoBehaviour
                 selectExplosive = number-1;
             }
         }
+
+        if(transform.position.y < -10) { rb.velocity = Vector2.zero; transform.position = startPos; }
     }
 
             private void Move()
@@ -87,7 +91,7 @@ public class playerMovement : MonoBehaviour
         }
         else
         {
-            if(grounded == true) { rb.velocity = new Vector2(rb.velocity.x * 0.95f, rb.velocity.y); }
+            if(grounded == true) { rb.velocity = new Vector2(rb.velocity.x * 0.5f, rb.velocity.y); }
         }
         if (V < 0) { Physics2D.gravity = normalGrav * 1.5f; }
         else { Physics2D.gravity = normalGrav; }
