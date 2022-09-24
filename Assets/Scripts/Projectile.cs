@@ -29,14 +29,12 @@ public class Projectile : MonoBehaviour
                 explosionTime = 2;
                 explosionRadius = 8;
                 explosionForce = 1000;
-                Debug.Log("grenade");
                 break;
 
             case ProjectileType.Sticky:
                 explosionTime = Mathf.Infinity;
                 explosionRadius = 4;
                 explosionForce = 500;
-                Debug.Log("sticky");
                 break;
 
             case ProjectileType.Rocket:
