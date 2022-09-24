@@ -18,6 +18,7 @@ public class playerMovement : MonoBehaviour
     private bool canJump;
     private bool hasJumped;
 
+
     //Throw Stuff
     public float throwConstant = 1;
     private float throwForce;
@@ -72,6 +73,7 @@ public class playerMovement : MonoBehaviour
             canJump = false;
         }
     }
+
 
     private void OnCollisionStay2D(Collision2D collision)
     {
