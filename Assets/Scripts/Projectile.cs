@@ -10,6 +10,7 @@ public class Projectile : MonoBehaviour
     private float explosionTime;
     private float explosionTimer;
     private float explosionRadius;
+    private float explosionForce;
     public enum ProjectileType
     {
         Grenade,
@@ -27,12 +28,14 @@ public class Projectile : MonoBehaviour
             case ProjectileType.Grenade:
                 explosionTime = 2;
                 explosionRadius = 8;
+                explosionForce = 1000;
                 Debug.Log("grenade");
                 break;
 
             case ProjectileType.Sticky:
                 explosionTime = Mathf.Infinity;
                 explosionRadius = 4;
+                explosionForce = 500;
                 Debug.Log("sticky");
                 break;
 
@@ -59,16 +62,24 @@ public class Projectile : MonoBehaviour
     private void Explode()
     {
         var newExplosion = Instantiate(explosion, transform.position, Quaternion.identity);
+        newExplosion.GetComponent<Explosion>().explosiveForce = explosionForce;
         newExplosion.transform.localScale = new Vector3(explosionRadius, explosionRadius, 0);
         Destroy(transform.gameObject);
     }
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if(type == ProjectileType.Sticky)
+        if (collision.transform.tag == "Projectile")
         {
-            transform.parent = collision.transform;
-            rb.velocity = Vector3.zero;
-            rb.isKinematic = true;
+            Physics2D.IgnoreCollision(transform.GetComponent<Collider2D>(), collision.transform.GetComponent<Collider2D>());
+        }
+        else
+        {
+            if (type == ProjectileType.Sticky)
+            {
+                transform.parent = collision.transform;
+                rb.velocity = Vector3.zero;
+                rb.isKinematic = true;
+            }
         }
     }
 }

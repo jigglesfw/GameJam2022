@@ -28,7 +28,7 @@ public class playerMovement : MonoBehaviour
     public float throwTime;
     private bool holdingThrow = false;
     private int selectExplosive = 1;
-    public float explosiveForce = 800;
+    private List<GameObject> stickies = new List<GameObject>();
 
     //World 
     private Vector2 normalGrav;
@@ -69,7 +69,7 @@ public class playerMovement : MonoBehaviour
             bool is_a_number = Int32.TryParse(Input.inputString, out number);
             if (is_a_number && number >= 1 && number < 10)
             {
-                selectExplosive = number;
+                selectExplosive = number-1;
             }
         }
     }
@@ -91,6 +91,8 @@ public class playerMovement : MonoBehaviour
         }
         if (V < 0) { Physics2D.gravity = normalGrav * 1.5f; }
         else { Physics2D.gravity = normalGrav; }
+
+        if (rb.velocity.y > vSpeed) { rb.velocity = new Vector2(rb.velocity.x , rb.velocity.y - 0.5f); }
 
     }
 
@@ -124,6 +126,7 @@ public class playerMovement : MonoBehaviour
     }
     private void OnCollisionExit2D(Collision2D collision)
     {
+        if(collision.transform.tag == "Ground") { lastTouched = null; }
         grounded = false;
         canJump = false;
     }
@@ -138,14 +141,17 @@ public class playerMovement : MonoBehaviour
         if(Input.GetMouseButtonUp(0))
         {
             var mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            if(selectExplosive == 1 && stickies.Count >= 3) { Destroy(stickies[0].gameObject);  stickies.RemoveAt(0); }
             var newGrenade = Instantiate(Grenade, transform.position, Quaternion.identity);
             var grenadeScript = newGrenade.GetComponent<Projectile>();
-            grenadeScript.type = (Projectile.ProjectileType)selectExplosive-1;
+            grenadeScript.type = (Projectile.ProjectileType)selectExplosive;
             Vector3 difference = new Vector2(mousePos.x - newGrenade.transform.position.x, mousePos.y - newGrenade.transform.position.y);
 
             newGrenade.transform.position = newGrenade.transform.position + difference.normalized;
             newGrenade.GetComponent<Rigidbody2D>().velocity = difference.normalized * throwConstant* throwForce;
             Physics2D.IgnoreCollision(newGrenade.transform.GetComponent<Collider2D>(), GetComponent<Collider2D>());
+
+            if(grenadeScript.type == Projectile.ProjectileType.Sticky) { stickies.Add(newGrenade.gameObject); }
             holdingThrow = false;
         }
 
@@ -154,7 +160,7 @@ public class playerMovement : MonoBehaviour
     {
         if (collision.transform.tag == "Explosion")
         {
-            rb.AddForce(new Vector2(transform.position.x - collision.transform.position.x , transform.position.y - collision.transform.position.y).normalized * explosiveForce);
+            rb.AddForce((new Vector2(transform.position.x - collision.transform.position.x , transform.position.y - collision.transform.position.y).normalized + new Vector2(0, 0.1f)) * collision.transform.GetComponent<Explosion>().explosiveForce);
         }
     }
 }
