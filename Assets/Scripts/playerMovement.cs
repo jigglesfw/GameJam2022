@@ -18,6 +18,7 @@ public class playerMovement : MonoBehaviour
     private bool canJump;
     private bool hasJumped;
     private bool grounded = false;
+    private bool canDash = true;
     
 
 
@@ -100,8 +101,12 @@ public class playerMovement : MonoBehaviour
 
     private void Dash()
     {
-        var hdash = Input.GetAxisRaw("Horizontal") + 20;
-        rb.velocity = new Vector2(hdash*hSpeed, rb.velocity.y);
+        if(canDash)
+        {
+            var hdash = Input.GetAxisRaw("Horizontal") + 20;
+            rb.velocity = new Vector2(hdash*hSpeed, rb.velocity.y);
+            canDash = false;
+        }
     }
 
     private void Jump()
