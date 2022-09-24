@@ -935,6 +935,10 @@ PrefabInstance:
       value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 6769319581423047160, guid: 02c9c44687a9f99439de997ba31c6549, type: 3}
+      propertyPath: dashForce
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 6769319581423047160, guid: 02c9c44687a9f99439de997ba31c6549, type: 3}
       propertyPath: throwTime
       value: 1
       objectReference: {fileID: 0}
