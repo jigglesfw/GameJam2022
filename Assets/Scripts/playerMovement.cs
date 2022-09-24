@@ -55,11 +55,11 @@ public class playerMovement : MonoBehaviour
         {
             Jump();
         }
-        if(Input.GetKeyDown(KeyCode.R) && Input.GetKey(KeyCode.A))
+        if(Input.GetKeyDown(KeyCode.LeftShift) && Input.GetKey(KeyCode.A))
             Dash("left");
-        else if(Input.GetKeyDown(KeyCode.R) && Input.GetKey(KeyCode.D))
+        else if(Input.GetKeyDown(KeyCode.LeftShift) && Input.GetKey(KeyCode.D))
             Dash("right");
-        else if(Input.GetKeyDown(KeyCode.R))
+        else if(Input.GetKeyDown(KeyCode.LeftShift))
             Dash("");
         if (Input.GetMouseButtonDown(0))
         {
