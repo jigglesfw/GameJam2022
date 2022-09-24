@@ -10,6 +10,7 @@ public class playerMovement : MonoBehaviour
     public float vSpeed;
     public float jumpForce;
     private float runMultiplier;
+    public float dashForce;
     private float H;
     private float V;
     private Rigidbody2D rb;
@@ -54,10 +55,12 @@ public class playerMovement : MonoBehaviour
         {
             Jump();
         }
-        if(Input.GetKeyDown(KeyCode.r))
-        {
-            Dash();
-        }
+        if(Input.GetKeyDown(KeyCode.R) && Input.GetKey(KeyCode.A))
+            Dash("left");
+        else if(Input.GetKeyDown(KeyCode.R) && Input.GetKey(KeyCode.D))
+            Dash("right");
+        else if(Input.GetKeyDown(KeyCode.R))
+            Dash("");
         if (Input.GetMouseButtonDown(0))
         {
             throwTimer = 0;
@@ -99,12 +102,16 @@ public class playerMovement : MonoBehaviour
 
     }
 
-    private void Dash()
+    private void Dash(string LorR)
     {
-        if(canDash)
+        if(canDash && LorR.Equals("left"))
         {
-            var hdash = Input.GetAxisRaw("Horizontal") + 20;
-            rb.velocity = new Vector2(hdash*hSpeed, rb.velocity.y);
+            rb.velocity = new Vector2((-1*dashForce), rb.velocity.y);
+            canDash = false;
+        }
+        else if(canDash && (LorR.Equals("right") || LorR.Equals("")))
+        {
+            rb.velocity = new Vector2(dashForce, rb.velocity.y);
             canDash = false;
         }
     }
@@ -126,6 +133,7 @@ public class playerMovement : MonoBehaviour
             lastTouched = null;
             canJump = true;
             grounded = true;
+            canDash = true;
         }
         if (collision.transform.tag == "Wall")
         {
