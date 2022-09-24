@@ -98,7 +98,7 @@ public class playerMovement : MonoBehaviour
             lastTouched = null;
             canJump = true;
             grounded = true;
-}
+        }
         if (collision.transform.tag == "Wall")
         {
  
@@ -109,7 +109,7 @@ public class playerMovement : MonoBehaviour
             }
         }
     }
-    private void OnCollisionExit(Collision collision)
+    private void OnCollisionExit2D(Collision2D collision)
     {
         grounded = false;
     }

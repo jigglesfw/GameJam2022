@@ -33,7 +33,6 @@ public class Projectile : MonoBehaviour
         else
         {
             var newExplosion = Instantiate(explosion, transform.position, Quaternion.identity);
-            
             Destroy(transform.gameObject);
         }
     }
