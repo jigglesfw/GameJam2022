@@ -6,7 +6,9 @@ public class Projectile : MonoBehaviour
 {
 
     private Rigidbody2D rb;
-    // Start is called before the first frame update
+    public GameObject explosion;
+    public float explosionTime = 3;
+    private float explosionTimer;
     public enum ProjectileType
     {
         Grenade,
@@ -18,25 +20,21 @@ public class Projectile : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        explosionTimer = explosionTime;
     }
 
     // Update is called once per frame
     void Update()
     {
-        switch (type)
+        if (explosionTimer >= 0)
         {
-            case ProjectileType.Grenade:
-                break;
-            case ProjectileType.Rocket:
-                break;
-            case ProjectileType.Idk:
-                break;
-
+            explosionTimer -= Time.deltaTime;
+        }
+        else
+        {
+            var newExplosion = Instantiate(explosion, transform.position, Quaternion.identity);
+            
+            Destroy(transform.gameObject);
         }
     }
-
-
-
-
-
 }

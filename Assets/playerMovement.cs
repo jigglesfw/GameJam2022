@@ -17,6 +17,7 @@ public class playerMovement : MonoBehaviour
     public static Vector2 playerVel;
     private bool canJump;
     private bool hasJumped;
+    private bool grounded = false;
 
 
     //Throw Stuff
@@ -26,6 +27,9 @@ public class playerMovement : MonoBehaviour
     public float throwTime;
     private bool holdingThrow = false;
 
+    //World 
+    private Vector2 normalGrav;
+
     //Object Stuff
     private GameObject lastTouched;
     public GameObject Grenade;
@@ -34,6 +38,7 @@ public class playerMovement : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        normalGrav = Physics2D.gravity;
     }
 
     // Update is called once per frame
@@ -60,8 +65,19 @@ public class playerMovement : MonoBehaviour
     {
         H = Input.GetAxisRaw("Horizontal");
         V = Input.GetAxisRaw("Vertical");
-
-        rb.velocity = new Vector2(H * hSpeed, rb.velocity.y);
+        if (H != 0)
+        {
+            if (Mathf.Abs(rb.velocity.x) < hSpeed || Mathf.Sign(H) != Mathf.Sign(rb.velocity.x))
+            {
+                rb.velocity = new Vector2(H * hSpeed, rb.velocity.y);
+            }
+        }
+        else
+        {
+            if(grounded == true) { rb.velocity = new Vector2(rb.velocity.x * 0.95f, rb.velocity.y); }
+        }
+        if (V < 0) { Physics2D.gravity = normalGrav * 1.5f; }
+        else { Physics2D.gravity = normalGrav; }
 
     }
 
@@ -81,7 +97,8 @@ public class playerMovement : MonoBehaviour
         {
             lastTouched = null;
             canJump = true;
-        }
+            grounded = true;
+}
         if (collision.transform.tag == "Wall")
         {
  
@@ -91,6 +108,10 @@ public class playerMovement : MonoBehaviour
                 canJump = true;
             }
         }
+    }
+    private void OnCollisionExit(Collision collision)
+    {
+        grounded = false;
     }
     private void ThrowProjectile()
     {
@@ -103,11 +124,19 @@ public class playerMovement : MonoBehaviour
         if(Input.GetMouseButtonUp(0))
         {
             var newGrenade = Instantiate(Grenade, transform.position, Quaternion.identity);
-            Debug.Log(throwForce);
+            var grenadeScript = newGrenade.GetComponent<Projectile>();
+            grenadeScript.type = Projectile.ProjectileType.Grenade;
             newGrenade.GetComponent<Rigidbody2D>().velocity = new Vector2(Camera.main.ScreenToWorldPoint(Input.mousePosition).x - newGrenade.transform.position.x, Camera.main.ScreenToWorldPoint(Input.mousePosition).y - newGrenade.transform.position.y).normalized * throwConstant* throwForce;
             Physics2D.IgnoreCollision(newGrenade.transform.GetComponent<Collider2D>(), GetComponent<Collider2D>());
             holdingThrow = false;
         }
 
+    }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.transform.tag == "Explosion")
+        {
+            rb.AddForce(new Vector2(transform.position.x - collision.transform.position.x , transform.position.y - collision.transform.position.y).normalized * 1000);
+        }
     }
 }
