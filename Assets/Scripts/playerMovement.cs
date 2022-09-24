@@ -53,6 +53,10 @@ public class playerMovement : MonoBehaviour
         {
             Jump();
         }
+        if(Input.GetKeyDown(KeyCode.r))
+        {
+            Dash();
+        }
         if (Input.GetMouseButtonDown(0))
         {
             throwTimer = 0;
@@ -92,6 +96,12 @@ public class playerMovement : MonoBehaviour
         if (V < 0) { Physics2D.gravity = normalGrav * 1.5f; }
         else { Physics2D.gravity = normalGrav; }
 
+    }
+
+    private void Dash()
+    {
+        var hdash = Input.GetAxisRaw("Horizontal") + 20;
+        rb.velocity = new Vector2(hdash*hSpeed, rb.velocity.y);
     }
 
     private void Jump()
