@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using System;
 public class playerMovement : MonoBehaviour
 {
 
@@ -18,6 +18,7 @@ public class playerMovement : MonoBehaviour
     private bool canJump;
     private bool hasJumped;
     private bool grounded = false;
+    
 
 
     //Throw Stuff
@@ -26,6 +27,8 @@ public class playerMovement : MonoBehaviour
     private float throwTimer = 0;
     public float throwTime;
     private bool holdingThrow = false;
+    private int selectExplosive = 1;
+    public float explosiveForce = 800;
 
     //World 
     private Vector2 normalGrav;
@@ -44,9 +47,9 @@ public class playerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
         Move();
-        if(Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space))
         {
             Jump();
         }
@@ -59,9 +62,19 @@ public class playerMovement : MonoBehaviour
         {
             ThrowProjectile();
         }
+
+        if (Input.inputString != "")
+        {
+            int number;
+            bool is_a_number = Int32.TryParse(Input.inputString, out number);
+            if (is_a_number && number >= 1 && number < 10)
+            {
+                selectExplosive = number;
+            }
+        }
     }
 
-    private void Move()
+            private void Move()
     {
         H = Input.GetAxisRaw("Horizontal");
         V = Input.GetAxisRaw("Vertical");
@@ -112,6 +125,7 @@ public class playerMovement : MonoBehaviour
     private void OnCollisionExit2D(Collision2D collision)
     {
         grounded = false;
+        canJump = false;
     }
     private void ThrowProjectile()
     {
@@ -123,10 +137,14 @@ public class playerMovement : MonoBehaviour
         }
         if(Input.GetMouseButtonUp(0))
         {
+            var mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             var newGrenade = Instantiate(Grenade, transform.position, Quaternion.identity);
             var grenadeScript = newGrenade.GetComponent<Projectile>();
-            grenadeScript.type = Projectile.ProjectileType.Grenade;
-            newGrenade.GetComponent<Rigidbody2D>().velocity = new Vector2(Camera.main.ScreenToWorldPoint(Input.mousePosition).x - newGrenade.transform.position.x, Camera.main.ScreenToWorldPoint(Input.mousePosition).y - newGrenade.transform.position.y).normalized * throwConstant* throwForce;
+            grenadeScript.type = (Projectile.ProjectileType)selectExplosive-1;
+            Vector3 difference = new Vector2(mousePos.x - newGrenade.transform.position.x, mousePos.y - newGrenade.transform.position.y);
+
+            newGrenade.transform.position = newGrenade.transform.position + difference.normalized;
+            newGrenade.GetComponent<Rigidbody2D>().velocity = difference.normalized * throwConstant* throwForce;
             Physics2D.IgnoreCollision(newGrenade.transform.GetComponent<Collider2D>(), GetComponent<Collider2D>());
             holdingThrow = false;
         }
@@ -136,7 +154,7 @@ public class playerMovement : MonoBehaviour
     {
         if (collision.transform.tag == "Explosion")
         {
-            rb.AddForce(new Vector2(transform.position.x - collision.transform.position.x , transform.position.y - collision.transform.position.y).normalized * 1000);
+            rb.AddForce(new Vector2(transform.position.x - collision.transform.position.x , transform.position.y - collision.transform.position.y).normalized * explosiveForce);
         }
     }
 }
