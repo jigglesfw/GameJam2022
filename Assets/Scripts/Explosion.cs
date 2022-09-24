@@ -6,6 +6,7 @@ public class Explosion : MonoBehaviour
 {
     public float timer = 0.1f;
     public float explosiveForce;
+    public GameObject splatter;
     // Start is called before the first frame update
     void Start()
     {
@@ -16,6 +17,6 @@ public class Explosion : MonoBehaviour
     void Update()
     {
          if(timer > 0) { timer -= Time.deltaTime; }  
-         else { Destroy(gameObject); }
+         else { Instantiate(splatter, transform.position, Quaternion.identity);  Destroy(gameObject); }
     }
 }
