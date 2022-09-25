@@ -23,6 +23,7 @@ public class playerMovement : MonoBehaviour
     private Vector2 startPos;
     private bool canScroll = true;
     public TMP_Text selectedName;
+    public float deathZone = -20;
 
 
     //Throw Stuff
@@ -33,7 +34,11 @@ public class playerMovement : MonoBehaviour
     private bool holdingThrow = false;
     private int selectExplosive = 0;
     private List<GameObject> stickies = new List<GameObject>();
+<<<<<<< HEAD
     private string direction = "";
+=======
+    private int airbornCounter = 0;
+>>>>>>> jaime-
 
     //World 
     private Vector2 normalGrav;
@@ -99,17 +104,17 @@ public class playerMovement : MonoBehaviour
                 selectedName.text = "Rat";
                 break;
             case 1:
-                selectedName.text = "Crocodile";
+                selectedName.text = "Cat";
                 break;
             case 2:
-                selectedName.text = "Cat";
+                selectedName.text = "Crocodile";
                 break;
         }
         
         if(selectedName.alpha >= 0) { selectedName.alpha -= Time.deltaTime; }
         
 
-        if(transform.position.y < -10) { rb.velocity = Vector2.zero; transform.position = startPos; }
+        if(transform.position.y < deathZone) { rb.velocity = Vector2.zero; transform.position = startPos; }
     }
 
     private void Move()
@@ -165,6 +170,7 @@ public class playerMovement : MonoBehaviour
             lastTouched = null;
             canJump = true;
             grounded = true;
+            airbornCounter = 0;
         }
         if (collision.transform.tag == "Wall")
         {
@@ -174,6 +180,8 @@ public class playerMovement : MonoBehaviour
                 lastTouched = collision.transform.gameObject;
                 canJump = true;
             }
+
+            airbornCounter = 0;
         }
     }
     private void OnCollisionExit2D(Collision2D collision)
@@ -193,14 +201,16 @@ public class playerMovement : MonoBehaviour
         if(Input.GetMouseButtonUp(0))
         {
             var mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            if(selectExplosive == 1 && stickies.Count >= 3) { Destroy(stickies[0].gameObject);  stickies.RemoveAt(0); }
+            if (selectExplosive == 1 && stickies.Count >= 3) { Destroy(stickies[0].gameObject); stickies.RemoveAt(0); }
             var newGrenade = Instantiate(Grenade, transform.position, Quaternion.identity);
             var grenadeScript = newGrenade.GetComponent<Projectile>();
             grenadeScript.type = (Projectile.ProjectileType)selectExplosive;
             Vector3 difference = new Vector2(mousePos.x - newGrenade.transform.position.x, mousePos.y - newGrenade.transform.position.y);
 
             newGrenade.transform.position = newGrenade.transform.position + difference.normalized;
-            newGrenade.GetComponent<Rigidbody2D>().velocity = difference.normalized * throwConstant* throwForce;
+            if(grenadeScript.type != Projectile.ProjectileType.Rocket) { newGrenade.GetComponent<Rigidbody2D>().velocity = difference.normalized * throwConstant * throwForce; }
+            else { newGrenade.GetComponent<Rigidbody2D>().velocity = difference.normalized * throwConstant; }
+            
             Physics2D.IgnoreCollision(newGrenade.transform.GetComponent<Collider2D>(), GetComponent<Collider2D>());
 
             if(grenadeScript.type == Projectile.ProjectileType.Sticky) { stickies.Add(newGrenade.gameObject); }
@@ -213,6 +223,7 @@ public class playerMovement : MonoBehaviour
         if (collision.transform.tag == "Explosion")
         {
             rb.AddForce((new Vector2(transform.position.x - collision.transform.position.x , transform.position.y - collision.transform.position.y).normalized + new Vector2(0, 0.1f)) * collision.transform.GetComponent<Explosion>().explosiveForce);
+            
         }
     }
 }
