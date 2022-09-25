@@ -14,11 +14,7 @@ public class paintExplosion : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-<<<<<<< HEAD
         if(particles.gravityModifier > 0.1f) { particles.gravityModifier -= Time.deltaTime * 7; }
-=======
-        if(particles.gravityModifier > 0.1f) { particles.gravityModifier -= Time.deltaTime * 5; }
->>>>>>> joshua
         
     }
 
