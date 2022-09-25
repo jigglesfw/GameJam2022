@@ -182,7 +182,7 @@ public class playerMovement : MonoBehaviour
         if(Input.GetMouseButtonUp(0))
         {
             var mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            if (selectExplosive == 1 && stickies.Count >= 3) { Destroy(stickies[0].gameObject); stickies.RemoveAt(0); }
+            if (selectExplosive == 1 && stickies.Count >= 3) { Destroy(stickies[0].gameObject); stickies.RemoveAt(0); airbornCounter += 1; }
             var newGrenade = Instantiate(Grenade, transform.position, Quaternion.identity);
             var grenadeScript = newGrenade.GetComponent<Projectile>();
             grenadeScript.type = (Projectile.ProjectileType)selectExplosive;
@@ -195,6 +195,7 @@ public class playerMovement : MonoBehaviour
             Physics2D.IgnoreCollision(newGrenade.transform.GetComponent<Collider2D>(), GetComponent<Collider2D>());
 
             if(grenadeScript.type == Projectile.ProjectileType.Sticky) { stickies.Add(newGrenade.gameObject); }
+            if(grenadeScript.type == Projectile.ProjectileType.Sticky && airbornCounter > 3) { Destroy(newGrenade.gameObject); }
             holdingThrow = false;
         }
 
