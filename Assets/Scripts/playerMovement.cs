@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using TMPro;
 public class playerMovement : MonoBehaviour
 {
 
@@ -10,7 +11,6 @@ public class playerMovement : MonoBehaviour
     public float vSpeed;
     public float jumpForce;
     private float runMultiplier;
-    public float dashForce;
     private float H;
     private float V;
     private Rigidbody2D rb;
@@ -19,8 +19,9 @@ public class playerMovement : MonoBehaviour
     private bool canJump;
     private bool hasJumped;
     private bool grounded = false;
-    private bool canDash = true;
-    
+    private Vector2 startPos;
+    private bool canScroll = true;
+    public TMP_Text selectedName;
 
 
     //Throw Stuff
@@ -29,7 +30,7 @@ public class playerMovement : MonoBehaviour
     private float throwTimer = 0;
     public float throwTime;
     private bool holdingThrow = false;
-    private int selectExplosive = 1;
+    private int selectExplosive = 0;
     private List<GameObject> stickies = new List<GameObject>();
 
     //World 
@@ -44,23 +45,18 @@ public class playerMovement : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         normalGrav = Physics2D.gravity;
+        startPos = transform.position;
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        
         Move();
         if (Input.GetKeyDown(KeyCode.Space))
         {
             Jump();
         }
-        if(Input.GetKeyDown(KeyCode.LeftShift) && Input.GetKey(KeyCode.A))
-            Dash("left");
-        else if(Input.GetKeyDown(KeyCode.LeftShift) && Input.GetKey(KeyCode.D))
-            Dash("right");
-        else if(Input.GetKeyDown(KeyCode.LeftShift))
-            Dash("");
         if (Input.GetMouseButtonDown(0))
         {
             throwTimer = 0;
@@ -77,9 +73,41 @@ public class playerMovement : MonoBehaviour
             bool is_a_number = Int32.TryParse(Input.inputString, out number);
             if (is_a_number && number >= 1 && number < 10)
             {
-                selectExplosive = number-1;
+                selectExplosive = number - 1;
+                selectedName.alpha = 1;
             }
+
         }
+
+            float scroll = Input.GetAxis("Mouse ScrollWheel");
+            if (scroll != 0 && canScroll == true)
+            {
+                if(scroll > 0 && selectExplosive < 2) { selectExplosive += 1; }
+                else if (scroll > 0) { selectExplosive = 0; }
+                if(scroll < 0 && selectExplosive > 0) { selectExplosive -= 1; }
+                else if(scroll < 0) { selectExplosive = 2; }
+                selectedName.alpha = 1;
+                canScroll = false;
+            }
+            else { canScroll = true; }
+
+        switch(selectExplosive)
+        {
+            case 0:
+                selectedName.text = "Rat";
+                break;
+            case 1:
+                selectedName.text = "Crocodile";
+                break;
+            case 2:
+                selectedName.text = "Cat";
+                break;
+        }
+        
+        if(selectedName.alpha >= 0) { selectedName.alpha -= Time.deltaTime; }
+        
+
+        if(transform.position.y < -10) { rb.velocity = Vector2.zero; transform.position = startPos; }
     }
 
             private void Move()
@@ -95,27 +123,13 @@ public class playerMovement : MonoBehaviour
         }
         else
         {
-            if(grounded == true) { rb.velocity = new Vector2(rb.velocity.x * 0.95f, rb.velocity.y); }
+            if(grounded == true) { rb.velocity = new Vector2(rb.velocity.x * 0.5f, rb.velocity.y); }
         }
         if (V < 0) { Physics2D.gravity = normalGrav * 1.5f; }
         else { Physics2D.gravity = normalGrav; }
 
         if (rb.velocity.y > vSpeed) { rb.velocity = new Vector2(rb.velocity.x , rb.velocity.y - 0.5f); }
 
-    }
-
-    private void Dash(string LorR)
-    {
-        if(canDash && LorR.Equals("left"))
-        {
-            rb.velocity = new Vector2((-1*dashForce), rb.velocity.y);
-            canDash = false;
-        }
-        else if(canDash && (LorR.Equals("right") || LorR.Equals("")))
-        {
-            rb.velocity = new Vector2(dashForce, rb.velocity.y);
-            canDash = false;
-        }
     }
 
     private void Jump()
@@ -135,7 +149,6 @@ public class playerMovement : MonoBehaviour
             lastTouched = null;
             canJump = true;
             grounded = true;
-            canDash = true;
         }
         if (collision.transform.tag == "Wall")
         {
