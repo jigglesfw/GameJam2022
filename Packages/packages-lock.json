@@ -2,7 +2,11 @@
   "dependencies": {
     "com.unity.2d.animation": {
       "version": "5.0.10",
+<<<<<<< HEAD
+      "depth": 1,
+=======
       "depth": 0,
+>>>>>>> joshua
       "source": "registry",
       "dependencies": {
         "com.unity.2d.common": "4.0.4",

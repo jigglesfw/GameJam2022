@@ -39,3 +39,5 @@ Logs/shadercompiler-UnityShaderCompiler.exe0.log
 Logs/AssetImportWorker1.log
 Logs/AssetImportWorker1.log
 *.log
+*.log
+*.log

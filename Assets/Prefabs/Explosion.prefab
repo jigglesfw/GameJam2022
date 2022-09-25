@@ -135,3 +135,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timer: 0.1
+  explosiveForce: 0
+  splatter: {fileID: 838395278172073010, guid: 67cb49b476ac24b48b535d43d7e3f0e8, type: 3}
+  mCam: {fileID: 7880650053013660714, guid: 59b40949bdf166f44bfd5ce4ee8532f5, type: 3}
