@@ -48,6 +48,10 @@ public class playerMovement : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         normalGrav = Physics2D.gravity;
         startPos = transform.position;
+
+        animator.SetBool("space_key_up", false);
+        animator.SetBool("collides_wall", false);
+        animator.SetBool("hit_ground", true);
     }
 
     // Update is called once per frame
@@ -58,6 +62,7 @@ public class playerMovement : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             Jump();
+            animator.SetBool("space_key_up", true);
         }
         if (Input.GetMouseButtonDown(0))
         {
@@ -125,7 +130,13 @@ public class playerMovement : MonoBehaviour
         }
         else
         {
-            if(grounded == true) { rb.velocity = new Vector2(rb.velocity.x * 0.5f, rb.velocity.y); }
+            if(grounded == true) 
+            { 
+                rb.velocity = new Vector2(rb.velocity.x * 0.5f, rb.velocity.y); 
+                animator.SetBool("hit_ground", true);
+                animator.SetBool("collides_wall", false);
+                animator.SetBool("space_key_up", false);
+            }
         }
         if (V < 0) { Physics2D.gravity = normalGrav * 1.5f; }
         else { Physics2D.gravity = normalGrav; }
@@ -154,6 +165,7 @@ public class playerMovement : MonoBehaviour
         {
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
             canJump = false;
+            animator.SetBool("hit_ground", false);
         }
     }
 
@@ -165,10 +177,12 @@ public class playerMovement : MonoBehaviour
             lastTouched = null;
             canJump = true;
             grounded = true;
+            animator.SetBool("space_key_up", false);
         }
         if (collision.transform.tag == "Wall")
         {
- 
+            animator.SetBool("collides_wall", true);
+            animator.SetBool("space_key_up", false);
             if(collision.gameObject != lastTouched)
             {
                 lastTouched = collision.transform.gameObject;
@@ -181,6 +195,7 @@ public class playerMovement : MonoBehaviour
         if(collision.transform.tag == "Ground") { lastTouched = null; }
         grounded = false;
         canJump = false;
+        animator.SetBool("hit_ground", false);
     }
     private void ThrowProjectile()
     {
