@@ -11,6 +11,8 @@ public class Projectile : MonoBehaviour
     private float explosionTimer;
     private float explosionRadius;
     private float explosionForce;
+    public List<Sprite> sprites = new List<Sprite>();
+    private SpriteRenderer spR;
     public enum ProjectileType
     {
         Grenade,
@@ -22,22 +24,29 @@ public class Projectile : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        spR = GetComponent<SpriteRenderer>();
 
         switch(type)
         {
             case ProjectileType.Grenade:
                 explosionTime = 2;
                 explosionRadius = 8;
-                explosionForce = 1000;
+                explosionForce = 1500;
+                spR.sprite = sprites[0];
+                if (transform.position.x > Camera.main.ScreenToWorldPoint(Input.mousePosition).x) { rb.AddTorque(10); }
+                else { rb.AddTorque(-10); }
+                
                 break;
 
             case ProjectileType.Sticky:
                 explosionTime = Mathf.Infinity;
                 explosionRadius = 4;
                 explosionForce = 500;
+                spR.sprite = sprites[1];
                 break;
 
             case ProjectileType.Rocket:
+                spR.sprite = sprites[2];
                 break;
         }
         explosionTimer = explosionTime;
@@ -46,6 +55,7 @@ public class Projectile : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        
         if (explosionTimer >= 0)
         {
             if(Input.GetMouseButton(1) && type == ProjectileType.Sticky) { Explode(); }

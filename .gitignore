@@ -42,3 +42,15 @@ Logs/AssetImportWorker1.log
 *.log
 *.log
 *.log
+<<<<<<< HEAD
+=======
+Logs/shadercompiler-UnityShaderCompiler.exe2.log
+Logs/shadercompiler-UnityShaderCompiler.exe3.log
+Logs/shadercompiler-UnityShaderCompiler.exe4.log
+Logs/shadercompiler-UnityShaderCompiler.exe5.log
+Logs/shadercompiler-UnityShaderCompiler.exe6.log
+Logs/shadercompiler-UnityShaderCompiler.exe7.log
+*.asset
+*.log
+>>>>>>> main
+*.log

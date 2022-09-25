@@ -82,7 +82,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!50 &6769319581423047111
@@ -119,8 +119,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hSpeed: 7
-  vSpeed: 0
+  vSpeed: 15
   jumpForce: 15
+  selectedName: {fileID: 0}
+  throwConstant: 20
+  throwTime: 0.5
   Grenade: {fileID: 1004037429695635873, guid: e41e5109549d6e047868e93ae10e8a44, type: 3}
 --- !u!70 &6769319581423047108
 CapsuleCollider2D:
