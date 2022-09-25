@@ -30,7 +30,11 @@ public class playerMovement : MonoBehaviour
     private float throwTimer = 0;
     public float throwTime;
     private bool holdingThrow = false;
+<<<<<<< HEAD
     private int selectExplosive = 0;
+=======
+    private int selectExplosive = 1;
+>>>>>>> joshua
     private List<GameObject> stickies = new List<GameObject>();
 
     //World 
@@ -73,6 +77,7 @@ public class playerMovement : MonoBehaviour
             bool is_a_number = Int32.TryParse(Input.inputString, out number);
             if (is_a_number && number >= 1 && number < 10)
             {
+<<<<<<< HEAD
                 selectExplosive = number - 1;
                 selectedName.alpha = 1;
             }
@@ -88,6 +93,9 @@ public class playerMovement : MonoBehaviour
                 else if(scroll < 0) { selectExplosive = 2; }
                 selectedName.alpha = 1;
                 canScroll = false;
+=======
+                selectExplosive = number-1;
+>>>>>>> joshua
             }
             else { canScroll = true; }
 
@@ -129,6 +137,11 @@ public class playerMovement : MonoBehaviour
         else { Physics2D.gravity = normalGrav; }
 
         if (rb.velocity.y > vSpeed) { rb.velocity = new Vector2(rb.velocity.x , rb.velocity.y - 0.5f); }
+<<<<<<< HEAD
+=======
+
+    }
+>>>>>>> joshua
 
     }
 
