@@ -9,6 +9,7 @@ public class playerMovement : MonoBehaviour
     public float hSpeed;
     public float vSpeed;
     public float jumpForce;
+    public Animator animator;
     private float runMultiplier;
     public float dashForce;
     private float H;
