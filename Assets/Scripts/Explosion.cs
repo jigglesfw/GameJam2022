@@ -24,7 +24,7 @@ public class Explosion : MonoBehaviour
          if(timer > 0) { timer -= Time.deltaTime; }  
          else {
             var particler =  Instantiate(splatter, transform.position, Quaternion.identity);
-            if(explosiveForce > 500) { particler.GetComponent<ParticleSystem>().Emit(500); }
+            if(explosiveForce > 500) { particler.GetComponent<ParticleSystem>().Emit(300); }
             else { particler.GetComponent<ParticleSystem>().Emit(20); }
             
             

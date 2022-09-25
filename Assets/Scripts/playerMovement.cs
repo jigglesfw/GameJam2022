@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using TMPro;
 public class playerMovement : MonoBehaviour
 {
 
@@ -19,7 +20,8 @@ public class playerMovement : MonoBehaviour
     private bool hasJumped;
     private bool grounded = false;
     private Vector2 startPos;
-    
+    private bool canScroll = true;
+    public TMP_Text selectedName;
 
 
     //Throw Stuff
@@ -28,7 +30,7 @@ public class playerMovement : MonoBehaviour
     private float throwTimer = 0;
     public float throwTime;
     private bool holdingThrow = false;
-    private int selectExplosive = 1;
+    private int selectExplosive = 0;
     private List<GameObject> stickies = new List<GameObject>();
 
     //World 
@@ -49,7 +51,7 @@ public class playerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        
         Move();
         if (Input.GetKeyDown(KeyCode.Space))
         {
@@ -71,9 +73,39 @@ public class playerMovement : MonoBehaviour
             bool is_a_number = Int32.TryParse(Input.inputString, out number);
             if (is_a_number && number >= 1 && number < 10)
             {
-                selectExplosive = number-1;
+                selectExplosive = number - 1;
+                selectedName.alpha = 1;
             }
+
         }
+
+            float scroll = Input.GetAxis("Mouse ScrollWheel");
+            if (scroll != 0 && canScroll == true)
+            {
+                if(scroll > 0 && selectExplosive < 2) { selectExplosive += 1; }
+                else if (scroll > 0) { selectExplosive = 0; }
+                if(scroll < 0 && selectExplosive > 0) { selectExplosive -= 1; }
+                else if(scroll < 0) { selectExplosive = 2; }
+                selectedName.alpha = 1;
+                canScroll = false;
+            }
+            else { canScroll = true; }
+
+        switch(selectExplosive)
+        {
+            case 0:
+                selectedName.text = "Rat";
+                break;
+            case 1:
+                selectedName.text = "Crocodile";
+                break;
+            case 2:
+                selectedName.text = "Cat";
+                break;
+        }
+        
+        if(selectedName.alpha >= 0) { selectedName.alpha -= Time.deltaTime; }
+        
 
         if(transform.position.y < -10) { rb.velocity = Vector2.zero; transform.position = startPos; }
     }
