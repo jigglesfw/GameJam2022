@@ -33,7 +33,6 @@ public class playerMovement : MonoBehaviour
     private bool holdingThrow = false;
     private int selectExplosive = 0;
     private List<GameObject> stickies = new List<GameObject>();
-    private string direction = "";
 
     //World 
     private Vector2 normalGrav;
@@ -52,6 +51,7 @@ public class playerMovement : MonoBehaviour
         animator.SetBool("space_key_up", false);
         animator.SetBool("collides_wall", false);
         animator.SetBool("hit_ground", true);
+        animator.SetBool("hitByExplosion", false);
     }
 
     // Update is called once per frame
@@ -135,6 +135,7 @@ public class playerMovement : MonoBehaviour
                 rb.velocity = new Vector2(rb.velocity.x * 0.5f, rb.velocity.y); 
                 animator.SetBool("hit_ground", true);
                 animator.SetBool("collides_wall", false);
+                animator.SetBool("hitByExplosion", false);
                 animator.SetBool("space_key_up", false);
             }
         }
@@ -147,16 +148,15 @@ public class playerMovement : MonoBehaviour
         {
             transform.GetComponent<SpriteRenderer>().flipX = true;
             animator.SetFloat("Speed", Mathf.Abs(rb.velocity.x));
-            direction = "left";
         }
         else if(rb.velocity.x > 0)
         {
             transform.GetComponent<SpriteRenderer>().flipX = false;
             animator.SetFloat("Speed", Mathf.Abs(rb.velocity.x));
-            direction = "right";
         }
 
-            //if velocity.x > 0 then transform.GetComponent<SpriteRenderer>().flipX = true
+        if(rb.velocity.y < 0){ animator.SetBool("fall", true);}
+        else{ animator.SetBool("fall", false);}
     }
 
     private void Jump()
@@ -228,6 +228,7 @@ public class playerMovement : MonoBehaviour
         if (collision.transform.tag == "Explosion")
         {
             rb.AddForce((new Vector2(transform.position.x - collision.transform.position.x , transform.position.y - collision.transform.position.y).normalized + new Vector2(0, 0.1f)) * collision.transform.GetComponent<Explosion>().explosiveForce);
+            animator.SetBool("hitByExplosion", true);
         }
     }
 }
