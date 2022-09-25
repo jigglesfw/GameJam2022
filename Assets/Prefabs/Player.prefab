@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 6769319581423047111}
   - component: {fileID: 6769319581423047160}
   - component: {fileID: 6769319581423047108}
-  - component: {fileID: 1677748868461439228}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -122,10 +121,6 @@ MonoBehaviour:
   hSpeed: 7
   vSpeed: 0
   jumpForce: 15
-  dashForce: 0
-  throwConstant: 1
-  throwTime: 0
-  explosiveForce: 800
   Grenade: {fileID: 1004037429695635873, guid: e41e5109549d6e047868e93ae10e8a44, type: 3}
 --- !u!70 &6769319581423047108
 CapsuleCollider2D:
@@ -143,22 +138,3 @@ CapsuleCollider2D:
   m_Offset: {x: 0, y: 0}
   m_Size: {x: 1, y: 1}
   m_Direction: 0
---- !u!95 &1677748868461439228
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6769319581423047109}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 2ba21ae8cdd7e624ab77b7eb0ea1ec86, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
