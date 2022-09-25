@@ -33,6 +33,7 @@ public class playerMovement : MonoBehaviour
     private bool holdingThrow = false;
     private int selectExplosive = 0;
     private List<GameObject> stickies = new List<GameObject>();
+    private string direction = "";
 
     //World 
     private Vector2 normalGrav;
@@ -52,7 +53,7 @@ public class playerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        animator.SetFloat("Speed", 0);
         Move();
         if (Input.GetKeyDown(KeyCode.Space))
         {
@@ -111,7 +112,7 @@ public class playerMovement : MonoBehaviour
         if(transform.position.y < -10) { rb.velocity = Vector2.zero; transform.position = startPos; }
     }
 
-            private void Move()
+    private void Move()
     {
         H = Input.GetAxisRaw("Horizontal");
         V = Input.GetAxisRaw("Vertical");
@@ -131,6 +132,20 @@ public class playerMovement : MonoBehaviour
 
         if (rb.velocity.y > vSpeed) { rb.velocity = new Vector2(rb.velocity.x , rb.velocity.y - 0.5f); }
 
+        if(rb.velocity.x < 0)
+        {
+            transform.GetComponent<SpriteRenderer>().flipX = true;
+            animator.SetFloat("Speed", Mathf.Abs(rb.velocity.x));
+            direction = "left";
+        }
+        else if(rb.velocity.x > 0)
+        {
+            transform.GetComponent<SpriteRenderer>().flipX = false;
+            animator.SetFloat("Speed", Mathf.Abs(rb.velocity.x));
+            direction = "right";
+        }
+
+            //if velocity.x > 0 then transform.GetComponent<SpriteRenderer>().flipX = true
     }
 
     private void Jump()
