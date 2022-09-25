@@ -57,6 +57,7 @@ public class playerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        animator.SetBool("mouse_clicked", false);
         animator.SetFloat("Speed", 0);
         Move();
         if (Input.GetKeyDown(KeyCode.Space))
@@ -68,9 +69,11 @@ public class playerMovement : MonoBehaviour
         {
             throwTimer = 0;
             holdingThrow = true;
+            animator.SetBool("mouse_clicked", true);
         }
         if (holdingThrow == true)
         {
+            animator.SetBool("mouse_released", false);
             ThrowProjectile();
         }
 
@@ -207,6 +210,7 @@ public class playerMovement : MonoBehaviour
         }
         if(Input.GetMouseButtonUp(0))
         {
+            animator.SetBool("mouse_released", true);
             var mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             if(selectExplosive == 1 && stickies.Count >= 3) { Destroy(stickies[0].gameObject);  stickies.RemoveAt(0); }
             var newGrenade = Instantiate(Grenade, transform.position, Quaternion.identity);
@@ -220,8 +224,8 @@ public class playerMovement : MonoBehaviour
 
             if(grenadeScript.type == Projectile.ProjectileType.Sticky) { stickies.Add(newGrenade.gameObject); }
             holdingThrow = false;
+            animator.SetBool("mouse_clicked", false);
         }
-
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
