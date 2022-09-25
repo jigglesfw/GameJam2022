@@ -23,7 +23,9 @@ public class playerMovement : MonoBehaviour
     private bool canScroll = true;
     public TMP_Text selectedName;
     public float deathZone = -20;
-
+    public Animator anim;
+    private bool touchingWall = false;
+    private bool lookedRight = true;
 
     //Throw Stuff
     public float throwConstant = 1;
@@ -53,7 +55,10 @@ public class playerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        anim.SetFloat("Speed", Mathf.Abs(rb.velocity.x));
+        anim.SetFloat("Yvel", rb.velocity.y);
+        anim.SetBool("Grounded", grounded);
+        anim.SetBool("collides_wall", touchingWall);
         Move();
         if (Input.GetKeyDown(KeyCode.Space))
         {
@@ -132,6 +137,15 @@ public class playerMovement : MonoBehaviour
 
         if (rb.velocity.y > vSpeed) { rb.velocity = new Vector2(rb.velocity.x , rb.velocity.y - 0.5f); }
 
+        if (H != 0)
+        {
+            if (H > 0) { lookedRight = true; }
+            else { lookedRight = false; }
+        }
+
+
+        if(lookedRight == true) { GetComponent<SpriteRenderer>().flipX = false; }
+        else { GetComponent<SpriteRenderer>().flipX = true; }
     }
 
     private void Jump()
@@ -155,6 +169,7 @@ public class playerMovement : MonoBehaviour
         }
         if (collision.transform.tag == "Wall")
         {
+            touchingWall = true;
  
             if(collision.gameObject != lastTouched)
             {
@@ -170,6 +185,7 @@ public class playerMovement : MonoBehaviour
         if(collision.transform.tag == "Ground") { lastTouched = null; }
         grounded = false;
         canJump = false;
+        touchingWall = false;
     }
     private void ThrowProjectile()
     {
