@@ -105,7 +105,7 @@ public class Projectile : MonoBehaviour
             }
             else if (type == ProjectileType.Rocket)
             {
-                if(collision.transform.GetComponent<SpriteRenderer>().color != Color.black) { Explode(); }
+                if(collision.transform.GetComponent<SpriteRenderer>().color != Color.white) { Explode(); }
                 else { Physics2D.IgnoreCollision(transform.GetComponent<Collider2D>(), collision.transform.GetComponent<Collider2D>()); }
                 
             }

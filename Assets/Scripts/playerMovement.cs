@@ -26,6 +26,8 @@ public class playerMovement : MonoBehaviour
     public Animator anim;
     private bool touchingWall = false;
     private bool lookedRight = true;
+    public AudioSource aud;
+    private bool walkAudio = false;
 
     //Throw Stuff
     public float throwConstant = 1;
@@ -50,6 +52,7 @@ public class playerMovement : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         normalGrav = Physics2D.gravity;
         startPos = transform.position;
+        aud.Play();
     }
 
     // Update is called once per frame
@@ -123,6 +126,8 @@ public class playerMovement : MonoBehaviour
         V = Input.GetAxisRaw("Vertical");
         if (H != 0)
         {
+            if(walkAudio == false) { aud.Play(); walkAudio = true; }
+            
             if (Mathf.Abs(rb.velocity.x) < hSpeed || Mathf.Sign(H) != Mathf.Sign(rb.velocity.x))
             {
                 rb.velocity = new Vector2(H * hSpeed, rb.velocity.y);
@@ -130,7 +135,8 @@ public class playerMovement : MonoBehaviour
         }
         else
         {
-            if(grounded == true) { rb.velocity = new Vector2(rb.velocity.x * 0.5f, rb.velocity.y); }
+            if(grounded == true) { rb.velocity = new Vector2(rb.velocity.x * 0.5f, rb.velocity.y);}
+            walkAudio = false;
         }
         if (V < 0) { Physics2D.gravity = normalGrav * 1.5f; }
         else { Physics2D.gravity = normalGrav; }
